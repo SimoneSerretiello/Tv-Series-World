@@ -53,7 +53,6 @@ def carica_serie_utente(lista_serie):
             if inp=="esci":
                 break
             print("Serie non trovata...")
-            print("\n")
     return to_return
 
 def cerca_serie(lista_serie, inp):
