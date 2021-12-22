@@ -147,7 +147,7 @@ def fitness(lista_utente, lista_non_codificata, lista_codificata):
                     for x in genere_consiglio:
                         for y in genere_utente:
                             if x not in consiglia_genre[y]:
-                                fit=0
+                                fit-=(fit*50)/100
         lista_fit.append([lista_codificata[z], fit])
     return lista_fit
 
