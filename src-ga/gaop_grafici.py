@@ -1,4 +1,5 @@
 import random
+import tkinter as tk
 import pandas as pd
 import time
 
@@ -40,32 +41,6 @@ consiglia_genre["Animation"]=["Music","Family", "Fantasy", "Musical"]
 tempo=time.time()
 
 
-
-def carica_serie_utente(lista_serie):
-    to_return=[]
-    generi=[]
-    inp=""
-    while inp!="esci":
-        inp=input('''Dimmi una serie tv:
-                  Scrivi esci per smettere di inserire serie ''')
-        inp=inp.lower()
-        aggiungi=cerca_serie(lista_serie, inp)
-        if aggiungi in to_return:
-            print("Serie già selezionata")
-        elif aggiungi!=None:
-            to_return.append(aggiungi)
-            generi_aggiungi=aggiungi[4].split(", ")
-            if generi_aggiungi[0] not in generi:
-                generi.append(generi_aggiungi[0])
-            if generi_aggiungi[1] not in generi:
-                generi.append(generi_aggiungi[1])
-            if generi_aggiungi[-1] not in generi:
-                generi.append(generi_aggiungi[-1])
-        elif aggiungi==None:
-            if inp=="esci":
-                break
-            print("Serie non trovata...")
-    return to_return, generi
 
 def cerca_serie(lista_serie, inp):
     
@@ -153,25 +128,20 @@ def fitness(lista_utente, lista_non_codificata, lista_codificata):
 
 
 
-def take_second(elem):
-    return elem[1]
 
-def twoTournament(lista_fit):
+def roulette_wheel_selection(lista_fit):
+    probabilita=[]
     to_return=[]
-    a=[]
-    for j in range(len(lista_fit)):
-        if len(lista_fit)>1:
-            a=random.choices(lista_fit, k=2)
-            if a[0] in lista_fit:
-                lista_fit.remove(a[0])
-            if a[1] in lista_fit:
-                lista_fit.remove(a[1])
-            a=sorted(a, key=take_second)
-            to_return.append(a[-1][0])
-        elif len(lista_fit)==1:
-            to_return.append(lista_fit[0][0])
-            break
-    return to_return
+    somma=0
+    for i in lista_fit:
+        somma+=i[1]
+    for i in lista_fit:
+        probabilita.append(i[1]/somma)
+    for i in range(len(lista_fit)):
+        indice=np.choice(len(lista_fit), p=probabilita)
+        to_return.append(lista_fit[indice][0])
+    return to_return   
+        
 
 
 def crossover(math_pool):
@@ -234,4 +204,3 @@ def trova_result(lista_fit):
             massimo=lista_fit[i][1]
             best=lista_fit[i][0]
     return best
-
