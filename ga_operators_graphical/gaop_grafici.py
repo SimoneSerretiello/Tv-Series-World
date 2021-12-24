@@ -162,7 +162,14 @@ def crossover(math_pool):
                 taglio=random.randint(1, len(lista_crossover[i]))
                 to_return.append(lista_crossover[i][0:taglio]+lista_crossover[i+1][taglio:len(lista_crossover[i+1])])
                 to_return.append(lista_crossover[i+1][0:taglio]+lista_crossover[i][taglio:len(lista_crossover[i])])
-    return to_return
+        else:
+            to_return.append(lista_crossover[i])
+            if i+1<=len(lista_crossover)-1:
+                to_return.append(lista_crossover[i+1])
+    if len(to_return)!=0:
+        return to_return
+    else:
+        return lista_crossover
 
 def mutation_inv(lista_codificata):
     val=[0,1]
