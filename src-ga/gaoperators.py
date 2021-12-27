@@ -217,7 +217,7 @@ def mutation_inv(lista_codificata):
 
 def stop(lista_fit):
     global tempo
-    if len(lista_fit)<=2 or time.time()-tempo>0.5:
+    if len(lista_fit)<=2 or time.time()-tempo>2:
         return True
     else:
         return False
