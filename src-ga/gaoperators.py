@@ -201,7 +201,7 @@ def mutation_inv(lista_codificata):
     prob=[.99, .01]
     for i in range(len(lista_codificata)):
         inversion_prob=random.choices(val,prob)
-        if inversion_prob==1:
+        if inversion_prob[0]==1:
             iniz=random.randint(0, len(lista_codificata))
             var=iniz+1
             fin=random.randint(var, len(lista_codificata))
