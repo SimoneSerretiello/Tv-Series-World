@@ -1,5 +1,4 @@
 import random
-import tkinter as tk
 import pandas as pd
 import time
 
@@ -41,6 +40,32 @@ consiglia_genre["Animation"]=["Music","Family", "Fantasy", "Musical"]
 tempo=time.time()
 
 
+
+def carica_serie_utente(lista_serie):
+    to_return=[]
+    generi=[]
+    inp=""
+    while inp!="esci":
+        inp=input('''Dimmi una serie tv:
+                  Scrivi esci per smettere di inserire serie ''')
+        inp=inp.lower()
+        aggiungi=cerca_serie(lista_serie, inp)
+        if aggiungi in to_return:
+            print("Serie già selezionata")
+        elif aggiungi!=None:
+            to_return.append(aggiungi)
+            generi_aggiungi=aggiungi[4].split(", ")
+            if generi_aggiungi[0] not in generi:
+                generi.append(generi_aggiungi[0])
+            if generi_aggiungi[1] not in generi:
+                generi.append(generi_aggiungi[1])
+            if generi_aggiungi[-1] not in generi:
+                generi.append(generi_aggiungi[-1])
+        elif aggiungi==None:
+            if inp=="esci":
+                break
+            print("Serie non trovata...")
+    return to_return, generi
 
 def cerca_serie(lista_serie, inp):
     
@@ -128,43 +153,52 @@ def fitness(lista_utente, lista_non_codificata, lista_codificata):
 
 
 
+def take_second(elem):
+    return elem[1]
 
-def roulette_wheel_selection(lista_fit):
-    probabilita=[]
+def twoTournament(lista_fit):
     to_return=[]
-    somma=0
-    for i in lista_fit:
-        somma+=i[1]
-    for i in lista_fit:
-        probabilita.append(i[1]/somma)
-    for i in range(len(lista_fit)):
-        indice=np.choice(len(lista_fit), p=probabilita)
-        to_return.append(lista_fit[indice][0])
-    return to_return   
-        
+    a=[]
+    for j in range(len(lista_fit)):
+        if len(lista_fit)>1:
+            a=random.choices(lista_fit, k=2)
+            if a[0] in lista_fit:
+                lista_fit.remove(a[0])
+            if a[1] in lista_fit:
+                lista_fit.remove(a[1])
+            a=sorted(a, key=take_second)
+            to_return.append(a[-1][0])
+        elif len(lista_fit)==1:
+            to_return.append(lista_fit[0][0])
+            break
+    return to_return
 
 
-def crossover(math_pool):
-    lista_crossover=math_pool
+def uniform_crossover(math_pool):
     to_return=[]
     val=[0,1]
     prob=[.2,.8]
-    for i in range(0,len(lista_crossover),2):
-        cross_prob=random.choices(val, prob)
-        
+    for i in range(0, len(math_pool), 2):
+        cross_prob=random.choices(val,prob)
         if cross_prob[0]==1:
-            if i+1<=len(lista_crossover)-1:
-                taglio=random.randint(1, len(lista_crossover[i]))
-                to_return.append(lista_crossover[i][0:taglio]+lista_crossover[i+1][taglio:len(lista_crossover[i+1])])
-                to_return.append(lista_crossover[i+1][0:taglio]+lista_crossover[i][taglio:len(lista_crossover[i])])
-        else:
-            to_return.append(lista_crossover[i])
-            if i+1<=len(lista_crossover)-1:
-                to_return.append(lista_crossover[i+1])
+            if i+1<=len(math_pool)-1:
+                figlio1=[]
+                figlio2=[]
+                for j in range(len(math_pool[i])):
+                    if j%2==0:
+                        figlio1.append(math_pool[i][j])
+                        figlio2.append(math_pool[i+1][j])
+                    else:
+                        figlio1.append(math_pool[i+1][j])
+                        figlio2.append(math_pool[i][j])
+                to_return.append(figlio1)
+                to_return.append(figlio2)
+            else:
+                to_return.append(math_pool[-1])
     if len(to_return)!=0:
         return to_return
     else:
-        return lista_crossover
+        return math_pool
 
 def mutation_inv(lista_codificata):
     val=[0,1]
@@ -179,11 +213,26 @@ def mutation_inv(lista_codificata):
                 if lista_codificata[i][j]==1:
                     lista_codificata[i][j]=0
                 else:
-                    lista_codificata[i][j]=1
-        
-            
-     
+                    lista_codificata[i][j]=1 
     return lista_codificata
+
+def swap(lista1, lista2, inizio, fine):
+    c=lista2[inizio:fine]
+    lista2[inizio:fine]=lista1[inizio:fine]
+    lista1[inizio:fine]=c
+    return lista1,lista2
+
+def mutation(lista_codificata):
+    val=[0,1]
+    prob=[.99,.01]
+    if random.choices(val,prob)[0]==1:
+        ind1=random.randint(0, len(lista_codificata)-2)
+        ind2=random.randint(ind1+1, len(lista_codificata)-1)
+        inizio=random.randint(0, len(lista_codificata[ind1])-2)
+        fine=random.randint(inizio+1, len(lista_codificata[ind1])-1)
+        lista_codificata[ind1], lista_codificata[ind2]=swap(lista_codificata[ind1], lista_codificata[ind2],inizio, fine)
+    return lista_codificata
+
 
 def stop(lista_fit):
     global tempo
