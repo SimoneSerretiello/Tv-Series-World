@@ -2,7 +2,6 @@ import tkinter as tk
 import random
 import pandas as pd
 from gaop_grafici import *
-#import requests
 
 
 
@@ -97,7 +96,7 @@ lista_serie_utente=[]
 generi=[]
 
 finestra= tk.Tk()
-finestra.geometry("1024x900")
+finestra.geometry("600x600")
 #finestra.attributes("-fullscreen", True)
 finestra.title("TvSeriesWorld")
 finestra.grid_columnconfigure(0, weight=1)
@@ -110,16 +109,13 @@ benvenuto_label.grid(row=0, column=0, sticky="N", padx=20)
 serie_tv_inp=tk.Entry()
 serie_tv_inp.grid(row=1, column=0, sticky="WE", padx=10)
 
-#Inserisci e crea carica serie utente
 invia=tk.Button(text="INVIA", command=carica_serie_utente)
 invia.grid(row=2, column=0, sticky="E", padx=10)
 
 consiglia=tk.Button(text="CONSIGLIA", command=ga)
 consiglia.grid(row=2, column=0, sticky="E", padx=60)
 
-#Inserisci e crea funzione ELIMINA
-elimina=tk.Button(text="ELIMINA")
-elimina.grid(row=4, column=0, sticky="WE", padx=20, pady=380)
+
 
 
 if __name__=="__main__":
